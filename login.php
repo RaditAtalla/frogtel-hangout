@@ -46,12 +46,12 @@ if (isset($_POST['login'])) {
   <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
-<body class="flex flex-col items-center">
+<body class="flex flex-col items-center px-[1em] sm:px-0">
   <header class="mt-[3rem] mb-[2rem]">
     <h1 class="font-black text-[3rem] mb-5 text-green-800 leading-none text-center"><a href="./">Frogtel <br><span class="text-black">Hangout</span></a></h1>
   </header>
 
-  <form action="" method="post" class="flex flex-col w-[500px]">
+  <form action="" method="post" class="flex flex-col w-full sm:w-[500px]">
     <h2 class="text-[2em] font-bold text-green-800 text-center">Log in</h2>
     <label for="username" class="text-[1.5rem] mb-[0.5em]">Username</label>
     <input type="text" id="username" name="username" class="p-2 border border-zinc-400 rounded mb-[1.5em]" required>
