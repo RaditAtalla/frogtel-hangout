@@ -2,6 +2,10 @@
 session_start();
 require 'functions.php';
 
+if (!isset($_SESSION['account'])) {
+  $_SESSION['account'] = '';
+}
+
 // Read posts
 $fetchPosts = mysqli_query($conn, "SELECT * FROM posts ORDER BY id DESC");
 $posts = [];
@@ -18,6 +22,20 @@ if (isset($_POST['post'])) {
   if ($insert) {
     header('Location: ./');
   }
+}
+
+// Delete posts
+if (isset($_POST['delete'])) {
+  $post_id = $_POST['post-id'];
+
+  if($_SESSION['account'] == 'super_admin') {
+    mysqli_query($conn, "UPDATE posts SET comment = '<p class=\"italic text-neutral-500 text-[1.25rem]\">[Post redacted by admin]</p>' WHERE id = $post_id ");
+    header('Location: ./');
+    return;
+  }
+
+  mysqli_query($conn, "DELETE FROM posts WHERE id=$post_id");
+  header('Location: ./');
 }
 ?>
 
@@ -45,13 +63,21 @@ if (isset($_POST['post'])) {
       </div>
       <?php foreach ($posts as $post) : ?>
         <div class="mb-[1em] border border-zinc-300 rounded pt-[1.5em] pb-[1em] px-[1em]">
-          <h3 class="text-[1.5rem] font-medium"><?= $post['username'] ?></h3>
+          <div class="flex justify-between items-center">
+            <h3 class="text-[1.5rem] font-medium"><?= $post['username'] ?></h3>
+            <?php if ($post['username'] == $_SESSION['account'] || $_SESSION['account'] == 'super_admin' ) : ?>
+              <form action="" method="post">
+                <input type="text" hidden name="post-id" value="<?= $post['id'] ?>">
+                <button type="submit" onclick="alert('Post deleted')" name="delete"><i data-feather="trash" class="text-green-800 hover:text-red-800 transition cursor-pointer"></i></button>
+              </form>
+            <?php endif ?>
+          </div>
           <p class="text-[1.25rem]"><?= $post['comment'] ?></p>
         </div>
       <?php endforeach; ?>
     </div>
 
-    <?php if (!isset($_SESSION['account'])) : ?>
+    <?php if ($_SESSION['account'] == '') : ?>
       <div class="flex flex-col w-full lg:w-1/3">
         <h2 class="text-center text-[2em] font-bold text-green-800 mb-[1em]">Log in to post</h2>
         <a href="login.php" class="text-center text-[1.5rem] font-bold bg-green-800 rounded text-white py-1 px-2 mb-[0.25em]">Log in</a>
