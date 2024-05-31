@@ -16,7 +16,7 @@ while ($post = mysqli_fetch_assoc($fetchPosts)) {
 // Create posts
 if (isset($_POST['post'])) {
   $displayName = $_SESSION['account'];
-  $comment = htmlspecialchars($_POST['comment']);
+  $comment = nl2br(htmlspecialchars($_POST['comment']));
 
   $insert = mysqli_query($conn, "INSERT INTO posts VALUES('', '$displayName', '$comment')");
   if ($insert) {
